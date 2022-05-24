@@ -16,8 +16,11 @@ func ItemHandler(itemService item.Service) *itemHandler {
 }
 
 func (h *itemHandler) GetAllItem(c *gin.Context) {
+
+	items, _ := h.item.GetAllItem()
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": "All Data Loaded",
+		"data": items,
 	})
 }
 

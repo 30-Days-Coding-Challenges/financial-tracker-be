@@ -31,10 +31,6 @@ func main() {
 	itemSourceService := itemsource.ItemSourceService(itemSourceRepository)
 	itemSourceHandler := handler.ItemSourceHandler(itemSourceService)
 
-	incomeRepository := income.IncomeRepository(db)
-	incomeService := income.IncomeService(incomeRepository)
-	incomeHandler := handler.IncomeHandler(incomeService)
-
 	itemRepository := item.ItemRepository(db)
 	itemService := item.ItemService(itemRepository)
 	itemHandler := handler.ItemHandler(itemService)
@@ -49,12 +45,6 @@ func main() {
 			"greet":    "Welcome to financial tracker service, enjoy your journey",
 		})
 	})
-
-	v1.GET("/incomes", incomeHandler.GetAllIncome)
-	v1.GET("/income/:id", incomeHandler.GetIncomeByID)
-	v1.POST("/income", incomeHandler.CreateIncome)
-	v1.DELETE("/income/:id", incomeHandler.DeleteIncome)
-	v1.PUT("/income/:id", incomeHandler.UpdateIncome)
 
 	v1.GET("/items", itemHandler.GetAllItem)
 	v1.GET("/item/:id", itemHandler.GetItemByID)
