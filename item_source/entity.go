@@ -1,4 +1,4 @@
-package incomesource
+package itemsource
 
 import (
 	"time"
@@ -6,8 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type IncomeSource struct {
+type ItemSource struct {
 	Name      string
+	Type      string
 	ID        uuid.UUID `gorm:"type:string;primaryKey;"`
 	CreatedAt time.Time
 	UpdatedAt time.Time

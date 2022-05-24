@@ -3,7 +3,8 @@ package main
 import (
 	"financial-tracker-be/handler"
 	"financial-tracker-be/income"
-	incomesource "financial-tracker-be/income_source"
+	"financial-tracker-be/item"
+	itemsource "financial-tracker-be/item_source"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,11 +25,19 @@ func main() {
 
 	fmt.Println("DB Connected")
 
-	db.AutoMigrate(&income.Income{}, &incomesource.IncomeSource{})
+	db.AutoMigrate(&income.Income{}, &itemsource.ItemSource{}, &item.Item{})
 
-	incomeSourceRepository := incomesource.SourceIncomeRepository(db)
-	incomeSourceService := incomesource.IncomeSourceService(incomeSourceRepository)
-	incomeSourceHandler := handler.IncomeSourceHandler(incomeSourceService)
+	itemSourceRepository := itemsource.ItemSourceRepository(db)
+	itemSourceService := itemsource.ItemSourceService(itemSourceRepository)
+	itemSourceHandler := handler.ItemSourceHandler(itemSourceService)
+
+	incomeRepository := income.IncomeRepository(db)
+	incomeService := income.IncomeService(incomeRepository)
+	incomeHandler := handler.IncomeHandler(incomeService)
+
+	itemRepository := item.ItemRepository(db)
+	itemService := item.ItemService(itemRepository)
+	itemHandler := handler.ItemHandler(itemService)
 
 	router := gin.Default()
 	v1 := router.Group("/v1")
@@ -41,13 +50,20 @@ func main() {
 		})
 	})
 
-	v1.GET("/incomes", handler.GetAllIncome)
-	v1.GET("/income/:id", handler.GetIncomeByID)
-	v1.POST("/income", handler.CreateIncome)
-	v1.DELETE("/income/:id", handler.DeleteIncome)
-	v1.PUT("/income/:id", handler.UpdateIncome)
-	v1.POST("/income-source", incomeSourceHandler.CreateIncomeSource)
-	v1.GET("/income-sources", incomeSourceHandler.GetAllIncomeSource)
+	v1.GET("/incomes", incomeHandler.GetAllIncome)
+	v1.GET("/income/:id", incomeHandler.GetIncomeByID)
+	v1.POST("/income", incomeHandler.CreateIncome)
+	v1.DELETE("/income/:id", incomeHandler.DeleteIncome)
+	v1.PUT("/income/:id", incomeHandler.UpdateIncome)
+
+	v1.GET("/items", itemHandler.GetAllItem)
+	v1.GET("/item/:id", itemHandler.GetItemByID)
+	v1.POST("/item", itemHandler.CreateItem)
+	v1.DELETE("/item/:id", itemHandler.DeleteItem)
+	v1.PUT("/item/:id", itemHandler.UpdateItem)
+
+	v1.POST("/item-source", itemSourceHandler.CreateItemSource)
+	v1.GET("/item-sources", itemSourceHandler.GetAllItemSource)
 
 	router.Run()
 }

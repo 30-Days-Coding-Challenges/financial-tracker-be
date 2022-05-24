@@ -1,33 +1,42 @@
 package handler
 
 import (
+	"financial-tracker-be/income"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllIncome(c *gin.Context) {
+type incomeHandler struct {
+	income income.Service
+}
+
+func IncomeHandler(incomeService income.Service) *incomeHandler {
+	return &incomeHandler{incomeService}
+}
+
+func (h *incomeHandler) GetAllIncome(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": "All Data Loaded",
 	})
 }
 
-func GetIncomeByID(c *gin.Context) {
+func (h *incomeHandler) GetIncomeByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": "Get Income Data",
 	})
 }
-func CreateIncome(c *gin.Context) {
+func (h *incomeHandler) CreateIncome(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": "Income Created",
 	})
 }
-func DeleteIncome(c *gin.Context) {
+func (h *incomeHandler) DeleteIncome(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": "Income Deleted",
 	})
 }
-func UpdateIncome(c *gin.Context) {
+func (h *incomeHandler) UpdateIncome(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": "Income Update",
 	})
