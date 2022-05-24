@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -36,6 +38,17 @@ func main() {
 	itemHandler := handler.ItemHandler(itemService)
 
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
 	v1 := router.Group("/v1")
 
 	v1.GET("/", func(c *gin.Context) {
