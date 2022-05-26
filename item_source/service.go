@@ -7,6 +7,8 @@ import (
 type Service interface {
 	CreateItemSource(source ItemSourceRequest) (ItemSource, error)
 	GetAllItemSource() ([]ItemSource, error)
+	GetItemSourceByID(ID string) (ItemSource, error)
+	DeleteItemSource(itemSource ItemSource) (ItemSource, error)
 }
 
 type service struct {
@@ -35,4 +37,18 @@ func (s service) GetAllItemSource() ([]ItemSource, error) {
 	allItemSources, err := s.repository.GetAllItemSource()
 
 	return allItemSources, err
+}
+
+func (s service) GetItemSourceByID(ID string) (ItemSource, error) {
+	item, err := s.repository.GetItemSourceByID(ID)
+
+	return item, err
+}
+
+func (s service) DeleteItemSource(itemSource ItemSource) (ItemSource, error){
+
+	item, err := s.repository.DeleteItemSource(itemSource)
+
+	return item, err
+
 }

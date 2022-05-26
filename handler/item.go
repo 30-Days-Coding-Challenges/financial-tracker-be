@@ -2,6 +2,7 @@ package handler
 
 import (
 	"financial-tracker-be/item"
+	"financial-tracker-be/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,8 +26,31 @@ func (h *itemHandler) GetAllItem(c *gin.Context) {
 }
 
 func (h *itemHandler) GetItemByID(c *gin.Context) {
+	itemID := c.Param("id")
+
+	if utils.IsStringUUID(itemID) != true {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "ERROR",
+			"message": "Invalid Format ID",
+		})
+		return
+	}
+
+	item, err := h.item.GetItemByID(itemID)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  "ERROR",
+			"message": "Item not found",
+			"error":   err,
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": "Get Item Data",
+		"status":  "OK",
+		"message": "OK",
+		"data":    item,
 	})
 }
 func (h *itemHandler) CreateItem(c *gin.Context) {
@@ -48,12 +72,74 @@ func (h *itemHandler) CreateItem(c *gin.Context) {
 	})
 }
 func (h *itemHandler) DeleteItem(c *gin.Context) {
+	itemID := c.Param("id")
+
+	if utils.IsStringUUID(itemID) != true {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "ERROR",
+			"message": "Invalid Format ID",
+		})
+		return
+	}
+
+	_, err := h.item.GetItemByID(itemID)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  "ERROR",
+			"message": "Item not found",
+			"error":   err,
+		})
+		return
+	}
+
+	errDelete := h.item.DeleteItem(itemID)
+
+	if errDelete != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "INTERNAL SERVER ERROR",
+			"message": errDelete,
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": "Item Deleted",
+		"status":  "OK",
+		"message": "Item Deleted",
+		"data":    "ID: " + itemID,
 	})
 }
+
 func (h *itemHandler) UpdateItem(c *gin.Context) {
+	itemID := c.Param("id")
+
+	if utils.IsStringUUID(itemID) != true {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "ERROR",
+			"message": "Invalid Format ID",
+		})
+		return
+	}
+
+	_, err := h.item.GetItemByID(itemID)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  "ERROR",
+			"message": "Item not found",
+			"error":   err,
+		})
+		return
+	}
+
+	var itemReq item.ItemRequest
+
+	c.ShouldBindJSON(&itemReq)
+	updatedItem, err := h.item.UpdateItem(itemID, itemReq)
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": "Item Update",
+		"status":  "OK",
+		"message": "Item Updated",
+		"data":    updatedItem,
 	})
 }

@@ -5,6 +5,8 @@ import "gorm.io/gorm"
 type Repository interface {
 	CreateItemSource(source ItemSource) (ItemSource, error)
 	GetAllItemSource() ([]ItemSource, error)
+	GetItemSourceByID(ID string) (ItemSource, error)
+	DeleteItemSource(itemSource ItemSource) (ItemSource, error)
 }
 
 type repository struct {
@@ -27,4 +29,19 @@ func (r repository) GetAllItemSource() ([]ItemSource, error) {
 	err := r.db.Find(&itemSources).Error
 
 	return itemSources, err
+}
+
+func (r repository) GetItemSourceByID(ID string) (ItemSource, error) {
+	var itemSource ItemSource
+
+	err := r.db.Find(&itemSource, "id = ?", ID).Error
+
+	return itemSource, err
+}
+
+func (r repository) DeleteItemSource(item ItemSource) (ItemSource, error){
+	err := r.db.Delete(&item).Error
+
+	return item, err
+
 }

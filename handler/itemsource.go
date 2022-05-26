@@ -39,3 +39,32 @@ func (h *itemSourceHandler) GetAllItemSource(c *gin.Context) {
 		"data": allitemSource,
 	})
 }
+
+func (h *itemSourceHandler) DeleteItemSource(c *gin.Context) {
+
+	itemSourceID := c.Param("id")
+
+	itemSource, err := h.itemSource.GetItemSourceByID(itemSourceID)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Item source not found",
+			"error": err,
+		})
+	}
+
+	deletedItemSource, err := h.itemSource.DeleteItemSource(itemSource)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message" : "Internal server error",
+			"error": err,
+		})
+	}
+	
+	c.JSON(http.StatusOK, gin.H{
+		"status" : "OK",
+		"message": "Item source Deleted",
+		"data" : deletedItemSource,
+	})
+}

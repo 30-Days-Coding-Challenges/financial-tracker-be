@@ -2,7 +2,6 @@ package main
 
 import (
 	"financial-tracker-be/handler"
-	"financial-tracker-be/income"
 	"financial-tracker-be/item"
 	itemsource "financial-tracker-be/item_source"
 	"fmt"
@@ -18,7 +17,7 @@ import (
 
 func main() {
 
-	dsn := "root:root@tcp(127.0.0.1:3306)/financial_tracker?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:password@tcp(127.0.0.1:3306)/financial_tracker?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -27,7 +26,7 @@ func main() {
 
 	fmt.Println("DB Connected")
 
-	db.AutoMigrate(&income.Income{}, &itemsource.ItemSource{}, &item.Item{})
+	db.AutoMigrate(&itemsource.ItemSource{}, &item.Item{})
 
 	itemSourceRepository := itemsource.ItemSourceRepository(db)
 	itemSourceService := itemsource.ItemSourceService(itemSourceRepository)
@@ -67,6 +66,7 @@ func main() {
 
 	v1.POST("/item-source", itemSourceHandler.CreateItemSource)
 	v1.GET("/item-sources", itemSourceHandler.GetAllItemSource)
+	v1.DELETE("/item-source/:id", itemSourceHandler.DeleteItemSource)
 
-	router.Run()
+	router.Run(":8081")
 }
