@@ -1,0 +1,21 @@
+========= Register User Flow =========
+1. user regis with email+password
+2. encryrpt aes user auth using key A
+3. encode base64
+4. save to db
+
+========= Login User Flow =========
+1. user login with email+password
+2. encryrpt aes user auth using key A
+3. encode base64
+4. checking to db
+5. get encoded base64 string
+6. encryrpt user auth using key B
+7. return as token
+
+========= Verify/Auth Token =========
+1. user give token
+2. decryrpt aes user auth using key B
+3. get encoded base64
+4. check to db
+5. return true

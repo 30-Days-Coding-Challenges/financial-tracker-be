@@ -6,6 +6,8 @@ require gorm.io/driver/mysql v1.3.3
 
 require (
 	github.com/gin-contrib/cors v1.3.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 )
 

@@ -34,12 +34,12 @@ func (r repository) GetAllItemSource() ([]ItemSource, error) {
 func (r repository) GetItemSourceByID(ID string) (ItemSource, error) {
 	var itemSource ItemSource
 
-	err := r.db.Find(&itemSource, "id = ?", ID).Error
+	err := r.db.Where("id = ?", ID).First(&itemSource).Error
 
 	return itemSource, err
 }
 
-func (r repository) DeleteItemSource(item ItemSource) (ItemSource, error){
+func (r repository) DeleteItemSource(item ItemSource) (ItemSource, error) {
 	err := r.db.Delete(&item).Error
 
 	return item, err
